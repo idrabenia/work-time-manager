@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">work-time-manager</string>
+    <string name="work_place">Work Place</string>
+    <string name="zero_time_value">00:00</string>
+    <string name="reset">Reset</string>
+</resources>
