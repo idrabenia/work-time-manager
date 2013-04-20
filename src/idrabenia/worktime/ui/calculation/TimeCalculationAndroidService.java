@@ -68,29 +68,4 @@ public class TimeCalculationAndroidService extends Service implements TimeCalcul
         timerActor.getMessageQueue().offer(new Message("reset"));
     }
 
-    @Override
-    public double[] getWorkLocation() {
-        final AtomicReferenceArray<Double> result = new AtomicReferenceArray<Double>(2);
-        final CountDownLatch latch = new CountDownLatch(1);
-        GetWorkLocationMessage message = new GetWorkLocationMessage(new GetWorkLocationListener() {
-            @Override
-            public void onLocationReceived(Double latitude, Double longitude) {
-                result.set(0, latitude);
-                result.set(1, longitude);
-                latch.countDown();
-            }
-        });
-        timerActor.getMessageQueue().offer(message);
-
-        try {
-            latch.await();
-            if (result.get(0) != null && result.get(1) != null) {
-                return new double[] { result.get(0), result.get(1) };
-            } else {
-                return null;
-            }
-        } catch (Exception ex) {
-            throw new RuntimeException(ex);
-        }
-    }
 }

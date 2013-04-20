@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="big_label_size">40dip</dimen>
+    <dimen name="time_label_size">70dip</dimen>
+</resources>

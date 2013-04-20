@@ -12,6 +12,4 @@ public interface TimeCalculationService {
 
     void reset();
 
-    double[] getWorkLocation();
-
 }
