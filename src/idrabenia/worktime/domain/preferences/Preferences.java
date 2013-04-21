@@ -15,12 +15,16 @@ import java.util.concurrent.TimeUnit;
 public class Preferences {
     private static final long DEFAULT_WORK_DAY_DURATION =  TimeUnit.HOURS.toMillis(8);
 
-    private final String WORK_DAY_DURATION_KEY;
-    private final Context context;
+    private String WORK_DAY_DURATION_KEY;
+    private Context context;
 
     public Preferences(Context context) {
         this.context = context;
         WORK_DAY_DURATION_KEY = context.getString(R.string.work_day_duration_key);
+    }
+    
+    protected Preferences() {
+    	
     }
 
     public String getWorkingNetworkSsid() {

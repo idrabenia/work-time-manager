@@ -22,15 +22,19 @@ public class TimeCalculationActor extends Thread {
 
     private Timer timer = new Timer("Time Calculation Timer");
 
-    private final NotificationPanel notificationPanel;
-    private final WifiNetworkAdapter wifiNetworkAdapter;
-    private final TimeCalculator timeCalculator = new TimeCalculator();
-    private final Preferences preferences;
+    protected NotificationPanel notificationPanel;
+    protected WifiNetworkAdapter wifiNetworkAdapter;
+    protected TimeCalculator timeCalculator = new TimeCalculator();
+    protected Preferences preferences;
 
     public TimeCalculationActor(Context context) {
         notificationPanel = new NotificationPanel(context);
         wifiNetworkAdapter = new WifiNetworkAdapter(context);
         preferences = new Preferences(context);
+    }
+    
+    protected TimeCalculationActor() {
+    	
     }
 
     @Override
@@ -62,16 +66,18 @@ public class TimeCalculationActor extends Thread {
 
     private void reset() {
         timeCalculator.reset();
+        notificationPanel.reset();
     }
 
-    private void calculateTimeByWifi() {
+    protected void calculateTimeByWifi() {
         if (wifiNetworkAdapter.isNetworkPresent(preferences.getWorkingNetworkSsid())) {
             timeCalculator.increase();
         } else {
             timeCalculator.skip();
         }
 
-        if (timeCalculator.getTimeValue() > 8 * 60 * 60 * 1000 && !notificationPanel.isNotifiedToday()) {
+        if (timeCalculator.getTimeValue() > preferences.getWorkDayDuration().toMillis() 
+        		&& !notificationPanel.isNotifiedToday()) {
             notificationPanel.notifyAboutOvertime();
         }
 

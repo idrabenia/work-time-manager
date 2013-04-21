@@ -7,9 +7,7 @@ import android.content.Context;
 import idrabenia.worktime.R;
 import idrabenia.worktime.domain.date.DateWithoutTimeComparator;
 
-import java.util.Calendar;
 import java.util.Date;
-import java.util.GregorianCalendar;
 
 /**
  * @author Ilya Drabenia
@@ -32,7 +30,7 @@ public class NotificationPanel {
         notificationManager.notify(notificationsCounter++, new Notification.Builder(context)
                 .setSmallIcon(R.drawable.ic_launcher)
                 .setContentTitle(context.getString(R.string.overtime_notification))
-                .setVibrate(new long[]{200, 200, 200, 200})
+                .setVibrate(new long[] {200, 200, 200, 200})
                 .setLights(0x00551100, 200, 600)
                 .setDefaults(Notification.FLAG_SHOW_LIGHTS)
                 .setContentText(context.getString(R.string.you_work_too_more))
@@ -47,6 +45,10 @@ public class NotificationPanel {
         }
 
         return dateComparator.compare(lastNotificationTime, new Date()) == 0;
+    }
+    
+    public void reset() {
+    	lastNotificationTime = null;
     }
 
 }

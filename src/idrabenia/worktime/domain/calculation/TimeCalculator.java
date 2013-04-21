@@ -14,25 +14,37 @@ public class TimeCalculator {
     private final DateWithoutTimeComparator dateWithoutTimeComparator = new DateWithoutTimeComparator();
 
     public void increase() {
+        resetIfNewDayStarts();
+    	
+    	long curTime = getCurTime();
+    	
         if (previousTime != null) {
-            timeCounter += new Date().getTime() - previousTime;
-            previousTime = new Date().getTime();
+            timeCounter += curTime - previousTime;
+            previousTime = curTime;
         } else {
-            previousTime = new Date().getTime();
-        }
-
-        if (isNewDayStarts()) {
-            timeCounter = 0;
+            previousTime = curTime;
         }
     }
 
     private boolean isNewDayStarts() {
-        return dateWithoutTimeComparator.compare(new Date(previousTime), new Date()) != 0;
+    	if (previousTime != null) {
+    		return dateWithoutTimeComparator.compare(new Date(previousTime), new Date(getCurTime())) != 0;
+    	} else {
+    		return false;
+    	}
     }
 
     public void skip() {
-        previousTime = new Date().getTime();
+    	resetIfNewDayStarts();
+    	
+        previousTime = getCurTime();
     }
+
+	private void resetIfNewDayStarts() {
+		if (isNewDayStarts()) {
+            reset();
+        }
+	}
 
     public void reset() {
         timeCounter = 0;
@@ -41,6 +53,10 @@ public class TimeCalculator {
 
     public long getTimeValue() {
         return timeCounter;
+    }
+    
+    public long getCurTime() {
+    	return new Date().getTime();
     }
 
 }
