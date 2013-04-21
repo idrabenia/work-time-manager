@@ -12,8 +12,10 @@ import android.view.MenuItem;
 import android.widget.TextView;
 import idrabenia.worktime.R;
 import idrabenia.worktime.domain.calculation.TimeCalculationService;
+import idrabenia.worktime.domain.date.Time;
 import idrabenia.worktime.ui.calculation.CalculationServiceBinder;
 import idrabenia.worktime.ui.calculation.TimeCalculationAndroidService;
+import idrabenia.worktime.ui.settings.SettingsActivity;
 
 import java.text.MessageFormat;
 import java.util.Timer;
@@ -68,12 +70,11 @@ public class WorkTimeManager extends Activity {
     }
 
     private void refreshTimeValue() {
-        Long value = timeCalculationService.getTimerValue();
+        Time value = timeCalculationService.getTimerValue();
 
         String textValue;
         if (value != null) {
-            textValue = MessageFormat.format(ELAPSED_TIME_FORMAT, MILLISECONDS.toHours(value),
-                    MILLISECONDS.toMinutes(value) % MINUTES_PER_HOUR);
+            textValue = MessageFormat.format(ELAPSED_TIME_FORMAT, value.hour, value.minute);
         } else {
             textValue = getString(R.string.zero_time_value);
         }
@@ -84,21 +85,19 @@ public class WorkTimeManager extends Activity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         new MenuInflater(this).inflate(R.menu.time_manager_menu, menu);
-
-        menu.findItem(R.id.menu_reset).setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
-            @Override
-            public boolean onMenuItemClick(MenuItem item) {
-                resetTimeCalculator();
-                return true;
-            }
-        });
-
         return super.onCreateOptionsMenu(menu);
     }
 
-    public void resetTimeCalculator() {
+    public boolean resetTimeCalculator(MenuItem item) {
         timeCalculationService.reset();
         refreshTimeValue();
+        return true;
+    }
+
+    public boolean showSettingsActivity(MenuItem item) {
+        Intent intent = new Intent(this, SettingsActivity.class);
+        startActivity(intent);
+        return true;
     }
 
     @Override

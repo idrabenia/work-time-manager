@@ -6,6 +6,7 @@ import idrabenia.worktime.domain.calculation.TimeCalculator;
 import idrabenia.worktime.domain.calculation.actor.message.GetTimerValueMessage;
 import idrabenia.worktime.domain.calculation.actor.message.Message;
 import idrabenia.worktime.domain.notification.NotificationPanel;
+import idrabenia.worktime.domain.preferences.Preferences;
 import idrabenia.worktime.domain.wifi.WifiNetworkAdapter;
 
 import java.util.*;
@@ -24,10 +25,12 @@ public class TimeCalculationActor extends Thread {
     private final NotificationPanel notificationPanel;
     private final WifiNetworkAdapter wifiNetworkAdapter;
     private final TimeCalculator timeCalculator = new TimeCalculator();
+    private final Preferences preferences;
 
     public TimeCalculationActor(Context context) {
         notificationPanel = new NotificationPanel(context);
         wifiNetworkAdapter = new WifiNetworkAdapter(context);
+        preferences = new Preferences(context);
     }
 
     @Override
@@ -62,7 +65,7 @@ public class TimeCalculationActor extends Thread {
     }
 
     private void calculateTimeByWifi() {
-        if (wifiNetworkAdapter.isNetworkPresent("liza")) {
+        if (wifiNetworkAdapter.isNetworkPresent(preferences.getWorkingNetworkSsid())) {
             timeCalculator.increase();
         } else {
             timeCalculator.skip();

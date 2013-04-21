@@ -7,6 +7,7 @@ import android.util.Log;
 import idrabenia.worktime.domain.calculation.actor.message.*;
 import idrabenia.worktime.domain.calculation.actor.TimeCalculationActor;
 import idrabenia.worktime.domain.calculation.TimeCalculationService;
+import idrabenia.worktime.domain.date.Time;
 
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.atomic.AtomicReference;
@@ -43,13 +44,13 @@ public class TimeCalculationAndroidService extends Service implements TimeCalcul
     }
 
     @Override
-    public Long getTimerValue() {
-        final AtomicReference<Long> result = new AtomicReference<Long>();
+    public Time getTimerValue() {
+        final AtomicReference<Time> result = new AtomicReference<Time>();
         final CountDownLatch latch = new CountDownLatch(1);
         GetTimerValueMessage message = new GetTimerValueMessage(new GetTimerValueListener() {
             @Override
             public void onValueReceived(Long value) {
-                result.set(value);
+                result.set(new Time(value));
                 latch.countDown();
             }
         });

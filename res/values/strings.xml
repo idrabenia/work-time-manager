@@ -1,11 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">work-time-manager</string>
+    <string name="app_name">Work Time Manager</string>
     <string name="work_place">Work Place</string>
     <string name="zero_time_value">00:00</string>
     <string name="reset">Reset</string>
     <string name="overtime_notification">Working day is ended</string>
     <string name="you_work_too_more">You working day is ended</string>
     <string name="elapsed_time">Time Elapsed</string>
-    <string name="settings">Reset</string>
+    <string name="settings">Settings</string>
+    <string name="network_ssid">WiFi Network Name</string>
+    <string name="input_your_wifi_ssid">Please enter name of WiFi network at your work:</string>
+    <string name="network_ssid_key">working_network_ssid</string>
+    <string name="work_day_duration">Work Day Duration</string>
+    <string name="work_day_duration_key">work_day_duration</string>
+    <string name="input_work_day_duration">Please enter your work day duration:</string>
 </resources>

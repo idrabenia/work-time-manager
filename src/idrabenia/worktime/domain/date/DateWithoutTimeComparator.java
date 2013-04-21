@@ -15,7 +15,7 @@ public class DateWithoutTimeComparator {
         Calendar secondCalendar = new GregorianCalendar(secondDate.getYear(), secondDate.getMonth(),
                 secondDate.getDay());
 
-        return firstDate.compareTo(secondDate);
+        return firstCalendar.compareTo(secondCalendar);
     }
 
 }
