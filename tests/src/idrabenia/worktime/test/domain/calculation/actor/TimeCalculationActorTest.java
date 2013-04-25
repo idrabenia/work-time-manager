@@ -74,8 +74,7 @@ public class TimeCalculationActorTest extends TestCase {
 			super.calculateTimeByWifi();
 		}
 	}
-	
-	
+
 	private NotificationPanelSpy notificationPanelSpy = new NotificationPanelSpy(null);
 	private PreferencesSpy preferencesSpy = new PreferencesSpy();
 	private WifiAdapterSpy wifiAdapterSpy = new WifiAdapterSpy(null);

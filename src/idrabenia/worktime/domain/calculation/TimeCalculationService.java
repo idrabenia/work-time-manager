@@ -14,4 +14,6 @@ public interface TimeCalculationService {
 
     void reset();
 
+    void recalculate();
+
 }

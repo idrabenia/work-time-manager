@@ -1,49 +1,40 @@
 package idrabenia.worktime.ui.calculation;
 
-import android.app.Service;
-import android.content.Intent;
-import android.os.IBinder;
-import android.util.Log;
+import android.content.Context;
 import idrabenia.worktime.domain.calculation.actor.message.*;
 import idrabenia.worktime.domain.calculation.actor.TimeCalculationActor;
-import idrabenia.worktime.domain.calculation.TimeCalculationService;
 import idrabenia.worktime.domain.date.Time;
 
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.atomic.AtomicReference;
-import java.util.concurrent.atomic.AtomicReferenceArray;
 
 /**
  * @author Ilya Drabenia
  * @since 13.04.13
  */
-public class TimeCalculationAndroidService extends Service implements TimeCalculationService {
+public class TimeCalculationService {
     private volatile TimeCalculationActor timerActor;
 
-    @Override
-    public void onCreate() {
-        timerActor = new TimeCalculationActor(getApplicationContext());
+    private static volatile TimeCalculationService instance;
+
+    public static TimeCalculationService getInstance(Context context) {
+        if (instance == null) {
+            synchronized (TimeCalculationService.class) {
+                if (instance == null) {
+                    instance = new TimeCalculationService(context);
+                }
+            }
+        }
+
+        return instance;
+    }
+
+    public TimeCalculationService(Context context) {
+        AlarmReceiver.setAlarm(context);
+        timerActor = new TimeCalculationActor(context.getApplicationContext());
         timerActor.start();
     }
 
-    @Override
-    public IBinder onBind(Intent intent) {
-        return new CalculationServiceBinder(this);
-    }
-
-    @Override
-    public void onDestroy() {
-        timerActor.interrupt();
-        Log.i("worktime", "TimeCalculationAndroidService#destroy()");
-    }
-
-    @Override
-    public void start(double latitude, double longitude) {
-        StartTimeCalculationMessage message = new StartTimeCalculationMessage(latitude, longitude);
-        timerActor.getMessageQueue().offer(message);
-    }
-
-    @Override
     public Time getTimerValue() {
         final AtomicReference<Time> result = new AtomicReference<Time>();
         final CountDownLatch latch = new CountDownLatch(1);
@@ -64,9 +55,11 @@ public class TimeCalculationAndroidService extends Service implements TimeCalcul
         }
     }
 
-    @Override
     public void reset() {
         timerActor.getMessageQueue().offer(new Message("reset"));
     }
 
+    public void recalculate() {
+        timerActor.getMessageQueue().offer(new Message("calculate"));
+    }
 }
