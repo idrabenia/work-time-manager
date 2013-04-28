@@ -1,9 +1,9 @@
 package idrabenia.worktime.test.domain.calculation;
 
-import idrabenia.worktime.domain.calculation.TimeCalculator;
+import idrabenia.worktime.domain.calculation.Timer;
 
 
-public class TimeCalculatorSpy extends TimeCalculator {
+public class TimerSpy extends Timer {
 	public long curTime;
 
 	@Override

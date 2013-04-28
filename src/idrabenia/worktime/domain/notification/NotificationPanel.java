@@ -23,6 +23,11 @@ public class NotificationPanel {
         context = curContext;
     }
 
+    public NotificationPanel(Context curContext, Date lastNotificationTime) {
+        context = curContext;
+        this.lastNotificationTime = lastNotificationTime;
+    }
+
     public void notifyAboutOvertime() {
         NotificationManager notificationManager = (NotificationManager) context.getSystemService(
                 Service.NOTIFICATION_SERVICE);
@@ -45,6 +50,10 @@ public class NotificationPanel {
         }
 
         return dateComparator.compare(lastNotificationTime, new Date()) == 0;
+    }
+
+    public Long getLastNotificationTime() {
+        return (lastNotificationTime != null) ? lastNotificationTime.getTime() : null;
     }
     
     public void reset() {

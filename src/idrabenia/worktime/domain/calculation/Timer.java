@@ -1,5 +1,6 @@
 package idrabenia.worktime.domain.calculation;
 
+import android.content.ContentValues;
 import idrabenia.worktime.domain.date.DateWithoutTimeComparator;
 
 import java.util.Date;
@@ -8,10 +9,18 @@ import java.util.Date;
  * @author Ilya Drabenia
  * @since 20.04.13
  */
-public class TimeCalculator {
+public class Timer {
     private long timeCounter = 0;
     private Long previousTime;
     private final DateWithoutTimeComparator dateWithoutTimeComparator = new DateWithoutTimeComparator();
+
+    public Timer() {
+    }
+
+    public Timer(long timeCounter, Long previousTime) {
+        this.timeCounter = timeCounter;
+        this.previousTime = previousTime;
+    }
 
     public void increase() {
         resetIfNewDayStarts();

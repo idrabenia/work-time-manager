@@ -1,9 +1,10 @@
-package idrabenia.worktime.ui.calculation;
+package idrabenia.worktime.domain.calculation;
 
 import android.content.Context;
+import idrabenia.worktime.domain.calculation.actor.TimerActor;
 import idrabenia.worktime.domain.calculation.actor.message.*;
-import idrabenia.worktime.domain.calculation.actor.TimeCalculationActor;
 import idrabenia.worktime.domain.date.Time;
+import idrabenia.worktime.ui.calculation.UpdateTimerReceiver;
 
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.atomic.AtomicReference;
@@ -12,16 +13,16 @@ import java.util.concurrent.atomic.AtomicReference;
  * @author Ilya Drabenia
  * @since 13.04.13
  */
-public class TimeCalculationService {
-    private volatile TimeCalculationActor timerActor;
+public class TimerService {
+    private volatile TimerActor timerActor;
 
-    private static volatile TimeCalculationService instance;
+    private static volatile TimerService instance;
 
-    public static TimeCalculationService getInstance(Context context) {
+    public static TimerService getInstance(Context context) {
         if (instance == null) {
-            synchronized (TimeCalculationService.class) {
+            synchronized (TimerService.class) {
                 if (instance == null) {
-                    instance = new TimeCalculationService(context);
+                    instance = new TimerService(context);
                 }
             }
         }
@@ -29,9 +30,9 @@ public class TimeCalculationService {
         return instance;
     }
 
-    public TimeCalculationService(Context context) {
-        AlarmReceiver.setAlarm(context);
-        timerActor = new TimeCalculationActor(context.getApplicationContext());
+    public TimerService(Context context) {
+        UpdateTimerReceiver.start(context);
+        timerActor = new TimerActor(context.getApplicationContext());
         timerActor.start();
     }
 
@@ -59,7 +60,19 @@ public class TimeCalculationService {
         timerActor.getMessageQueue().offer(new Message("reset"));
     }
 
+    public void recalculateAsync() {
+        timerActor.getMessageQueue().offer(new CalculateMessage());
+    }
+
     public void recalculate() {
-        timerActor.getMessageQueue().offer(new Message("calculate"));
+        final CountDownLatch latch = new CountDownLatch(1);
+        timerActor.getMessageQueue().offer(new CalculateMessage(new CalculateListener() {
+            @Override
+            public void onCalculationFinished() {
+                latch.countDown();
+            }
+        }));
+
+        latch.countDown();
     }
 }

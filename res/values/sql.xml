@@ -1,0 +1,12 @@
+<resources>
+    <string-array name="worktime_database_ddl">
+        <item>
+            create table work_time (
+                day integer not null,
+                work_time integer not null,
+                last_notification_time integer,
+                primary key (day asc)
+            );
+        </item>
+    </string-array>
+</resources>

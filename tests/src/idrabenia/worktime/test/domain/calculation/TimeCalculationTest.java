@@ -9,7 +9,7 @@ public class TimeCalculationTest extends TestCase {
 	public static final long MILLIS_PER_MINUTE = 60000L;
 	public static final long MILLIS_PER_DAY = TimeUnit.DAYS.toMillis(1L);
 	
-	private TimeCalculatorSpy timer = new TimeCalculatorSpy();
+	private TimerSpy timer = new TimerSpy();
 	private long testDate = new GregorianCalendar(2009, 10, 10, 9, 30, 30).getTimeInMillis();
 
 	

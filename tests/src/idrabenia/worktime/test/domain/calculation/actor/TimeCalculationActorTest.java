@@ -4,12 +4,12 @@ import java.util.GregorianCalendar;
 import java.util.concurrent.TimeUnit;
 
 import android.content.Context;
-import idrabenia.worktime.domain.calculation.actor.TimeCalculationActor;
+import idrabenia.worktime.domain.calculation.actor.TimerActor;
 import idrabenia.worktime.domain.date.Time;
 import idrabenia.worktime.domain.notification.NotificationPanel;
 import idrabenia.worktime.domain.preferences.Preferences;
 import idrabenia.worktime.domain.wifi.WifiNetworkAdapter;
-import idrabenia.worktime.test.domain.calculation.TimeCalculatorSpy;
+import idrabenia.worktime.test.domain.calculation.TimerSpy;
 import junit.framework.TestCase;
 
 public class TimeCalculationActorTest extends TestCase {
@@ -61,12 +61,12 @@ public class TimeCalculationActorTest extends TestCase {
 		}
 	}
 	
-	private class TimeActorSpy extends TimeCalculationActor {
+	private class TimeActorSpy extends TimerActor {
 		public TimeActorSpy(Context context) {
 			this.notificationPanel = notificationPanelSpy;
 			this.wifiNetworkAdapter = wifiAdapterSpy;
 			this.preferences = preferencesSpy;
-			this.timeCalculator = calculatorSpy;
+			this.timer = calculatorSpy;
 		}
 
 		@Override
@@ -78,7 +78,7 @@ public class TimeCalculationActorTest extends TestCase {
 	private NotificationPanelSpy notificationPanelSpy = new NotificationPanelSpy(null);
 	private PreferencesSpy preferencesSpy = new PreferencesSpy();
 	private WifiAdapterSpy wifiAdapterSpy = new WifiAdapterSpy(null);
-	private TimeCalculatorSpy calculatorSpy = new TimeCalculatorSpy();
+	private TimerSpy calculatorSpy = new TimerSpy();
 	private TimeActorSpy actor = new TimeActorSpy(null);
 	
 	public void testOvertimeNotification() {

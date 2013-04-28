@@ -9,7 +9,8 @@ import android.view.MenuItem;
 import android.widget.TextView;
 import idrabenia.worktime.R;
 import idrabenia.worktime.domain.date.Time;
-import idrabenia.worktime.ui.calculation.TimeCalculationService;
+import idrabenia.worktime.domain.calculation.TimerService;
+import idrabenia.worktime.ui.calculation.BackgroundService;
 import idrabenia.worktime.ui.settings.SettingsActivity;
 
 import java.text.MessageFormat;
@@ -20,26 +21,33 @@ public class WorkTimeManager extends Activity {
     public static final int REFRESH_PERIOD = 30 * 1000; // in milliseconds
     public static final String ELAPSED_TIME_FORMAT = "{0,number,00}:{1,number,00}";
 
-    private TimeCalculationService timeCalculationService;
-    private final Timer refreshTimeValueTimer = new Timer("Refresh Timer Value Timer");
+    private TimerService timerService;
+    private Timer refreshTimer;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main);
 
-        timeCalculationService = TimeCalculationService.getInstance(this);
-        scheduleRefreshTimeTask();
+        BackgroundService.start(this);
+        timerService = TimerService.getInstance(this);
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        refreshTimeValue();
+        scheduleRefreshTimer();
     }
 
-    private void scheduleRefreshTimeTask() {
-        refreshTimeValueTimer.schedule(new TimerTask() {
+    @Override
+    protected void onPause() {
+        super.onPause();
+        refreshTimer.cancel();
+    }
+
+    private void scheduleRefreshTimer() {
+        refreshTimer = new Timer("Refresh Timer Value Timer");
+        refreshTimer.schedule(new TimerTask() {
             @Override
             public void run() {
                 WorkTimeManager.this.runOnUiThread(new Runnable() {
@@ -53,11 +61,11 @@ public class WorkTimeManager extends Activity {
     }
 
     private void refreshTimeValue() {
-        if (timeCalculationService == null) {
+        if (timerService == null) {
             return;
         }
 
-        Time value = timeCalculationService.getTimerValue();
+        Time value = timerService.getTimerValue();
 
         String textValue;
         if (value != null) {
@@ -76,7 +84,7 @@ public class WorkTimeManager extends Activity {
     }
 
     public boolean resetTimeCalculator(MenuItem item) {
-        timeCalculationService.reset();
+        timerService.reset();
         refreshTimeValue();
         return true;
     }
@@ -87,10 +95,5 @@ public class WorkTimeManager extends Activity {
         return true;
     }
 
-    @Override
-    protected void onDestroy() {
-        refreshTimeValueTimer.cancel();
-        super.onDestroy();
-    }
 }
 
