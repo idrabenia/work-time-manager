@@ -25,6 +25,7 @@ public class WorkTimeManager extends Activity {
 
     private TimerService timerService;
     private Timer refreshTimer;
+    private AlertDialog resetDialog;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -44,7 +45,14 @@ public class WorkTimeManager extends Activity {
     @Override
     protected void onPause() {
         super.onPause();
-        refreshTimer.cancel();
+
+        if (refreshTimer != null) {
+            refreshTimer.cancel();
+        }
+
+        if (resetDialog != null && resetDialog.isShowing()) {
+            resetDialog.cancel();
+        }
     }
 
     private void scheduleRefreshTimer() {
@@ -86,7 +94,7 @@ public class WorkTimeManager extends Activity {
     }
 
     public boolean resetTimeCalculator(MenuItem item) {
-        new AlertDialog.Builder(this)
+        resetDialog = new AlertDialog.Builder(this)
                 .setTitle(R.string.timer_reset)
                 .setMessage(R.string.approve_reset_message)
                 .setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
@@ -97,7 +105,8 @@ public class WorkTimeManager extends Activity {
                     }
                 })
                 .setNegativeButton(R.string.no, null)
-                .create().show();
+                .create();
+        resetDialog.show();
 
         return true;
     }
