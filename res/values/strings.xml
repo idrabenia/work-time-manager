@@ -14,4 +14,8 @@
     <string name="work_day_duration">Work Day Duration</string>
     <string name="work_day_duration_key">work_day_duration</string>
     <string name="input_work_day_duration">Please enter your work day duration:</string>
+    <string name="timer_reset">Timer Reset</string>
+    <string name="approve_reset_message">Are you really want to reset timer?</string>
+    <string name="yes">Yes</string>
+    <string name="no">No</string>
 </resources>

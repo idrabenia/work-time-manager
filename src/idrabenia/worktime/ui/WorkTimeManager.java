@@ -1,6 +1,8 @@
 package idrabenia.worktime.ui;
 
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
@@ -84,8 +86,19 @@ public class WorkTimeManager extends Activity {
     }
 
     public boolean resetTimeCalculator(MenuItem item) {
-        timerService.reset();
-        refreshTimeValue();
+        new AlertDialog.Builder(this)
+                .setTitle(R.string.timer_reset)
+                .setMessage(R.string.approve_reset_message)
+                .setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        timerService.reset();
+                        refreshTimeValue();
+                    }
+                })
+                .setNegativeButton(R.string.no, null)
+                .create().show();
+
         return true;
     }
 
