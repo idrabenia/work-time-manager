@@ -6,6 +6,11 @@
           android:showAsAction="collapseActionView"
           android:onClick="resetTimeCalculator" />
 
+    <item android:id="@+id/menu_statistics"
+          android:title="@string/statistics"
+          android:showAsAction="collapseActionView"
+          android:onClick="showStatisticsActivity" />
+
     <item android:id="@+id/menu_settings"
           android:title="@string/settings"
           android:showAsAction="collapseActionView"

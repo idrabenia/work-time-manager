@@ -18,4 +18,8 @@
     <string name="approve_reset_message">Are you really want to reset timer?</string>
     <string name="yes">Yes</string>
     <string name="no">No</string>
+    <string name="statistics">Statistics</string>
+    <string name="days">Days</string>
+    <string name="hours">Hours</string>
+    <string name="hours_spent_at_work">Hours spent at work</string>
 </resources>

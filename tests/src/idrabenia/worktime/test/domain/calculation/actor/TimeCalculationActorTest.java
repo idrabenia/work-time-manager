@@ -4,7 +4,12 @@ import java.util.GregorianCalendar;
 import java.util.concurrent.TimeUnit;
 
 import android.content.Context;
+import idrabenia.worktime.domain.calculation.Timer;
 import idrabenia.worktime.domain.calculation.actor.TimerActor;
+import idrabenia.worktime.domain.calculation.actor.message.CalculateMessage;
+import idrabenia.worktime.domain.calculation.actor.message.Message;
+import idrabenia.worktime.domain.database.TimerActorDao;
+import idrabenia.worktime.domain.database.TimerActorDaoImpl;
 import idrabenia.worktime.domain.date.Time;
 import idrabenia.worktime.domain.notification.NotificationPanel;
 import idrabenia.worktime.domain.preferences.Preferences;
@@ -67,11 +72,31 @@ public class TimeCalculationActorTest extends TestCase {
 			this.wifiNetworkAdapter = wifiAdapterSpy;
 			this.preferences = preferencesSpy;
 			this.timer = calculatorSpy;
+			this.timerActorDao = new TimerActorDao() {
+				
+				@Override
+				public void saveTimerActor(Timer calculator, NotificationPanel panel) {					
+				}
+				
+				@Override
+				public Timer loadOrCreateTimer() {
+					return null;
+				}
+				
+				@Override
+				public NotificationPanel loadOrCreateNotificationPanel(Context context) {
+					return null;
+				}
+				
+				@Override
+				public void close() {
+				}
+			};
 		}
 
 		@Override
-		public void calculateTimeByWifi() {
-			super.calculateTimeByWifi();
+		public void calculateTimeByWifi(CalculateMessage message) {
+			super.calculateTimeByWifi(message);
 		}
 	}
 
@@ -90,10 +115,10 @@ public class TimeCalculationActorTest extends TestCase {
 		wifiAdapterSpy.isNetworkPresent = true;
 		
 		calculatorSpy.curTime = TEST_DATE;
-		actor.calculateTimeByWifi();
+		actor.calculateTimeByWifi(new CalculateMessage());
 		
 		calculatorSpy.curTime = TEST_DATE + DAY_DURATION + 1L;
-		actor.calculateTimeByWifi();
+		actor.calculateTimeByWifi(new CalculateMessage());
 		
 		assertNotificationWasSent();
 	}

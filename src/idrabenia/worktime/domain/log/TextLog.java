@@ -10,9 +10,14 @@ import java.util.Date;
  * @since 23.04.13
  */
 public class TextLog implements Closeable {
+	private static final boolean DISABLED = true;
     private BufferedWriter writer;
 
     public TextLog(String fileName) {
+    	if (DISABLED) {
+    		return;
+    	}
+    	
         try {
             File logFile = new File("sdcard/WorkTime/" + fileName);
             if (!logFile.exists()) {
@@ -26,6 +31,10 @@ public class TextLog implements Closeable {
     }
 
     public void log(String message) {
+    	if (DISABLED) {
+    		return;
+    	}
+    	
         try {
             writer.append(new Date().toString()).append(" ").append(message).append("\n");
             writer.flush();
@@ -36,6 +45,10 @@ public class TextLog implements Closeable {
 
     @Override
     public void close() {
+    	if (DISABLED) {
+    		return;
+    	}
+    	
         try {
             writer.close();
         } catch (IOException ex) {

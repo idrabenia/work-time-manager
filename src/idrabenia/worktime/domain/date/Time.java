@@ -25,4 +25,5 @@ public class Time {
     public long toMillis() {
         return TimeUnit.HOURS.toMillis(hour) + TimeUnit.MINUTES.toMillis(minute);
     }
+    
 }

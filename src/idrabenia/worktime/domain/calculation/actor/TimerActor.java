@@ -7,6 +7,7 @@ import idrabenia.worktime.domain.calculation.actor.message.CalculateMessage;
 import idrabenia.worktime.domain.calculation.actor.message.GetTimerValueMessage;
 import idrabenia.worktime.domain.calculation.actor.message.Message;
 import idrabenia.worktime.domain.database.TimerActorDao;
+import idrabenia.worktime.domain.database.TimerActorDaoImpl;
 import idrabenia.worktime.domain.log.TextLog;
 import idrabenia.worktime.domain.notification.NotificationPanel;
 import idrabenia.worktime.domain.preferences.Preferences;
@@ -28,13 +29,13 @@ public class TimerActor extends Thread {
     protected WifiNetworkAdapter wifiNetworkAdapter;
     protected Timer timer;
     protected Preferences preferences;
-    private TimerActorDao timerActorDao;
+    protected TimerActorDao timerActorDao;
 
     public TimerActor(Context context) {
         wifiNetworkAdapter = new WifiNetworkAdapter(context);
         preferences = new Preferences(context);
 
-        timerActorDao = new TimerActorDao(context);
+        timerActorDao = new TimerActorDaoImpl(context);
         timer = timerActorDao.loadOrCreateTimer();
         notificationPanel = timerActorDao.loadOrCreateNotificationPanel(context);
     }

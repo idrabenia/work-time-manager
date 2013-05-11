@@ -1,5 +1,16 @@
 package idrabenia.worktime.ui;
 
+import idrabenia.worktime.R;
+import idrabenia.worktime.domain.calculation.TimerService;
+import idrabenia.worktime.domain.date.Time;
+import idrabenia.worktime.domain.date.TimeFormatter;
+import idrabenia.worktime.ui.analytics.StatisticsActivity;
+import idrabenia.worktime.ui.calculation.BackgroundService;
+import idrabenia.worktime.ui.settings.SettingsActivity;
+
+import java.util.Timer;
+import java.util.TimerTask;
+
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
@@ -9,20 +20,11 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.widget.TextView;
-import idrabenia.worktime.R;
-import idrabenia.worktime.domain.date.Time;
-import idrabenia.worktime.domain.calculation.TimerService;
-import idrabenia.worktime.ui.calculation.BackgroundService;
-import idrabenia.worktime.ui.settings.SettingsActivity;
-
-import java.text.MessageFormat;
-import java.util.Timer;
-import java.util.TimerTask;
 
 public class WorkTimeManager extends Activity {
     public static final int REFRESH_PERIOD = 30 * 1000; // in milliseconds
-    public static final String ELAPSED_TIME_FORMAT = "{0,number,00}:{1,number,00}";
 
+    private TimeFormatter timeFormatter = new TimeFormatter();
     private TimerService timerService;
     private Timer refreshTimer;
     private AlertDialog resetDialog;
@@ -76,13 +78,7 @@ public class WorkTimeManager extends Activity {
         }
 
         Time value = timerService.getTimerValue();
-
-        String textValue;
-        if (value != null) {
-            textValue = MessageFormat.format(ELAPSED_TIME_FORMAT, value.hour, value.minute);
-        } else {
-            textValue = getString(R.string.zero_time_value);
-        }
+        String textValue = timeFormatter.format(value);
 
         ((TextView) findViewById(R.id.timer_value)).setText(textValue);
     }
@@ -113,6 +109,12 @@ public class WorkTimeManager extends Activity {
 
     public boolean showSettingsActivity(MenuItem item) {
         Intent intent = new Intent(this, SettingsActivity.class);
+        startActivity(intent);
+        return true;
+    }
+
+    public boolean showStatisticsActivity(MenuItem item) {
+        Intent intent = new Intent(this, StatisticsActivity.class);
         startActivity(intent);
         return true;
     }
