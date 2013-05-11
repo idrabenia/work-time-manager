@@ -1,8 +1,5 @@
 package idrabenia.worktime.domain.database;
 
-import android.content.ContentValues;
-import android.content.Context;
-import android.database.Cursor;
 import idrabenia.worktime.domain.calculation.Timer;
 import idrabenia.worktime.domain.notification.NotificationPanel;
 
@@ -10,7 +7,15 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.nio.channels.FileChannel;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.GregorianCalendar;
+import java.util.List;
+
+import android.content.ContentValues;
+import android.content.Context;
+import android.database.Cursor;
 
 /**
  * @author Ilya Drabenia

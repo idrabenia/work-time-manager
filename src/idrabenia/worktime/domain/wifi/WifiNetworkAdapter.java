@@ -1,12 +1,12 @@
 package idrabenia.worktime.domain.wifi;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import android.app.Service;
 import android.content.Context;
 import android.net.wifi.ScanResult;
 import android.net.wifi.WifiManager;
-
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * @author Ilya Drabenia

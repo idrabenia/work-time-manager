@@ -1,12 +1,13 @@
 package idrabenia.worktime.domain.preferences;
 
-import android.content.Context;
-import android.content.SharedPreferences;
-import android.preference.PreferenceManager;
 import idrabenia.worktime.R;
 import idrabenia.worktime.domain.date.Time;
 
 import java.util.concurrent.TimeUnit;
+
+import android.content.Context;
+import android.content.SharedPreferences;
+import android.preference.PreferenceManager;
 
 /**
  * @author Ilya Drabenia

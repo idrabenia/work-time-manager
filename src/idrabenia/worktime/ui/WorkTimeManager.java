@@ -4,9 +4,9 @@ import idrabenia.worktime.R;
 import idrabenia.worktime.domain.calculation.TimerService;
 import idrabenia.worktime.domain.date.Time;
 import idrabenia.worktime.domain.date.TimeFormatter;
-import idrabenia.worktime.ui.analytics.StatisticsActivity;
 import idrabenia.worktime.ui.calculation.BackgroundService;
 import idrabenia.worktime.ui.settings.SettingsActivity;
+import idrabenia.worktime.ui.statistics.StatisticsActivity;
 
 import java.util.Timer;
 import java.util.TimerTask;

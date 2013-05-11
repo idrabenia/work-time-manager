@@ -1,7 +1,4 @@
-package idrabenia.worktime.ui.analytics;
-
-import java.text.*;
-import java.util.Calendar;
+package idrabenia.worktime.ui.statistics;
 
 import idrabenia.worktime.R;
 import idrabenia.worktime.domain.database.WorkStatisticsDao;
@@ -9,6 +6,11 @@ import idrabenia.worktime.domain.database.WorkStatisticsDaoImpl;
 import idrabenia.worktime.domain.date.Time;
 import idrabenia.worktime.domain.date.TimeFormatter;
 import idrabenia.worktime.domain.statistics.DayStatistics;
+
+import java.text.FieldPosition;
+import java.text.NumberFormat;
+import java.text.ParsePosition;
+import java.util.Calendar;
 
 import org.achartengine.ChartFactory;
 import org.achartengine.GraphicalView;
@@ -30,8 +32,31 @@ import android.widget.LinearLayout;
  * @since 06.05.13
  */
 public class StatisticsActivity extends Activity {
-	private final TimeFormatter timeFormatter = new TimeFormatter();
+	private final WeekDayFormatter weekDayFormatter = new WeekDayFormatter();
     private WorkStatisticsDao statisticsDao;
+    
+    private final NumberFormat timeFormatter = new NumberFormat() {
+		private static final long serialVersionUID = 1L;
+		
+		private final TimeFormatter formatter = new TimeFormatter();
+
+		@Override
+		public Number parse(String string, ParsePosition position) {
+			return null;
+		}
+		
+		@Override
+		public StringBuffer format(long value, StringBuffer buffer,
+				FieldPosition field) {
+			return null;
+		}
+		
+		@Override
+		public StringBuffer format(double value, StringBuffer buffer,
+				FieldPosition field) {
+			return new StringBuffer(formatter.format(new Time((long)(value * 3600 * 1000))));
+		}
+	};
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -81,26 +106,7 @@ public class StatisticsActivity extends Activity {
         rendererSeries.setChartValuesTextSize(25);
         rendererSeries.setChartValuesSpacing(4f);
         rendererSeries.setChartValuesTextAlign(Align.CENTER);
-        rendererSeries.setChartValuesFormat(new NumberFormat() {
-			private static final long serialVersionUID = 1L;
-
-			@Override
-			public Number parse(String string, ParsePosition position) {
-				return null;
-			}
-			
-			@Override
-			public StringBuffer format(long value, StringBuffer buffer,
-					FieldPosition field) {
-				return null;
-			}
-			
-			@Override
-			public StringBuffer format(double value, StringBuffer buffer,
-					FieldPosition field) {
-				return new StringBuffer(timeFormatter.format(new Time((long)(value * 3600 * 1000))));
-			}
-		});
+        rendererSeries.setChartValuesFormat(timeFormatter);
         renderer.addSeriesRenderer(rendererSeries);
         
         return renderer;
@@ -110,7 +116,7 @@ public class StatisticsActivity extends Activity {
     	XYSeries series = new XYSeries("Worked hours at day", 0);
 
         for (DayStatistics value : statisticsDao.loadLastWeekStatistics()) {
-        	double x = value.getDayOfWeek();
+        	double x = weekDayFormatter.getDayCoordinate(value.getDayOfWeek());
         	double y = value.getWorkedHours();
             series.add(x, y);
         }
@@ -122,13 +128,9 @@ public class StatisticsActivity extends Activity {
     }
 
     private void generateDayLabels(XYMultipleSeriesRenderer renderer) {
-        DateFormatSymbols dateFormatSymbols = new DateFormatSymbols();
-        final int firstWeekDay = Calendar.getInstance().getFirstDayOfWeek();
-        final int DAYS_PER_WEEK = 7;
-        for (int i = firstWeekDay - 1; i <= firstWeekDay - 1 + DAYS_PER_WEEK; i += 1) {
-            renderer.addXTextLabel(i % DAYS_PER_WEEK + 1, dateFormatSymbols.getShortWeekdays()[i % DAYS_PER_WEEK + 1]);
-            renderer.setXLabelsAlign(Align.CENTER);
+    	renderer.setXLabelsAlign(Align.CENTER);
+        for (int i = Calendar.SUNDAY; i <= Calendar.SATURDAY; i += 1) {
+            renderer.addXTextLabel(weekDayFormatter.getDayCoordinate(i), weekDayFormatter.getWeekDayTitle(i));
         }
     }
-
 }

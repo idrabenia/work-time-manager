@@ -1,7 +1,5 @@
 package idrabenia.worktime.domain.calculation.actor;
 
-import android.content.Context;
-import android.util.Log;
 import idrabenia.worktime.domain.calculation.Timer;
 import idrabenia.worktime.domain.calculation.actor.message.CalculateMessage;
 import idrabenia.worktime.domain.calculation.actor.message.GetTimerValueMessage;
@@ -15,6 +13,9 @@ import idrabenia.worktime.domain.wifi.WifiNetworkAdapter;
 
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
+
+import android.content.Context;
+import android.util.Log;
 
 /**
  * @author Ilya Drabenia

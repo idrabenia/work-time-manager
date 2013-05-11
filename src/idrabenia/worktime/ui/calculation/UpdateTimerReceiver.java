@@ -1,11 +1,14 @@
 package idrabenia.worktime.ui.calculation;
 
-import android.app.AlarmManager;
-import android.app.PendingIntent;
-import android.content.*;
 import idrabenia.worktime.domain.calculation.TimerService;
 
 import java.util.concurrent.TimeUnit;
+
+import android.app.AlarmManager;
+import android.app.PendingIntent;
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.Intent;
 
 /**
  * @author Ilya Drabenia

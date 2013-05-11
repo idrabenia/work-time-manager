@@ -1,15 +1,9 @@
 package idrabenia.worktime.domain.database;
 
-import android.content.ContentValues;
+import idrabenia.worktime.R;
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
-import idrabenia.worktime.R;
-import idrabenia.worktime.domain.date.Time;
-
-import java.util.Calendar;
-import java.util.Date;
-import java.util.GregorianCalendar;
 
 /**
  * @author Ilya Drabenia

@@ -1,9 +1,9 @@
 package idrabenia.worktime.ui.settings;
 
+import idrabenia.worktime.R;
 import android.os.Bundle;
 import android.preference.PreferenceActivity;
 import android.view.MenuItem;
-import idrabenia.worktime.R;
 
 /**
  * @author Ilya Drabenia

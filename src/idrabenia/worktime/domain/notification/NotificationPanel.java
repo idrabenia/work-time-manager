@@ -1,13 +1,14 @@
 package idrabenia.worktime.domain.notification;
 
-import android.app.Notification;
-import android.app.NotificationManager;
-import android.app.Service;
-import android.content.Context;
 import idrabenia.worktime.R;
 import idrabenia.worktime.domain.date.DateWithoutTimeComparator;
 
 import java.util.Date;
+
+import android.app.Notification;
+import android.app.NotificationManager;
+import android.app.Service;
+import android.content.Context;
 
 /**
  * @author Ilya Drabenia

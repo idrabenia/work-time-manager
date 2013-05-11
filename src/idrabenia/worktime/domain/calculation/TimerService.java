@@ -1,13 +1,18 @@
 package idrabenia.worktime.domain.calculation;
 
-import android.content.Context;
 import idrabenia.worktime.domain.calculation.actor.TimerActor;
-import idrabenia.worktime.domain.calculation.actor.message.*;
+import idrabenia.worktime.domain.calculation.actor.message.CalculateListener;
+import idrabenia.worktime.domain.calculation.actor.message.CalculateMessage;
+import idrabenia.worktime.domain.calculation.actor.message.GetTimerValueListener;
+import idrabenia.worktime.domain.calculation.actor.message.GetTimerValueMessage;
+import idrabenia.worktime.domain.calculation.actor.message.Message;
 import idrabenia.worktime.domain.date.Time;
 import idrabenia.worktime.ui.calculation.UpdateTimerReceiver;
 
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.atomic.AtomicReference;
+
+import android.content.Context;
 
 /**
  * @author Ilya Drabenia

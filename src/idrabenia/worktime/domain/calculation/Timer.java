@@ -1,6 +1,5 @@
 package idrabenia.worktime.domain.calculation;
 
-import android.content.ContentValues;
 import idrabenia.worktime.domain.date.DateWithoutTimeComparator;
 
 import java.util.Date;
