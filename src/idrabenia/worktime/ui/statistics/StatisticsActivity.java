@@ -32,13 +32,9 @@ import android.widget.LinearLayout;
  * @since 06.05.13
  */
 public class StatisticsActivity extends Activity {
-	private final WeekDayFormatter weekDayFormatter = new WeekDayFormatter();
-    private WorkStatisticsDao statisticsDao;
-    
-    private final NumberFormat timeFormatter = new NumberFormat() {
+	private static final TimeFormatter timeFormatter = new TimeFormatter();
+    private static final NumberFormat timeFormatAdapter = new NumberFormat() {
 		private static final long serialVersionUID = 1L;
-		
-		private final TimeFormatter formatter = new TimeFormatter();
 
 		@Override
 		public Number parse(String string, ParsePosition position) {
@@ -54,26 +50,43 @@ public class StatisticsActivity extends Activity {
 		@Override
 		public StringBuffer format(double value, StringBuffer buffer,
 				FieldPosition field) {
-			return new StringBuffer(formatter.format(new Time((long)(value * 3600 * 1000))));
+			return new StringBuffer(timeFormatter.format(new Time((long)(value * 3600 * 1000))));
 		}
 	};
+	
+	private final WeekDayFormatter weekDayFormatter = new WeekDayFormatter();
+    private WorkStatisticsDao statisticsDao;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.analytics);
         
-        statisticsDao = new WorkStatisticsDaoImpl(this);
-
-        LinearLayout layout = (LinearLayout) findViewById(R.id.analytics_layout);
-    	GraphicalView chartView = ChartFactory.getBarChartView(this, makeLastWeekStatisticsDataSet(), 
-    			makeGraphViewRenderer(), BarChart.Type.DEFAULT);
+        if (statisticsDao == null) {
+        	statisticsDao = new WorkStatisticsDaoImpl(this);
+        }
+        
+    	GraphicalView chartView = ChartFactory.getBarChartView(this, makeStatisticsDataSet(), makeGraphViewRenderer(), 
+    			BarChart.Type.DEFAULT);
+    	LinearLayout layout = (LinearLayout) findViewById(R.id.analytics_layout);
         layout.addView(chartView);
     }
     
-    private XYMultipleSeriesRenderer makeGraphViewRenderer() {
+    @Override
+	protected void onDestroy() {
+		super.onDestroy();
+		
+		statisticsDao.close();
+		statisticsDao = null;
+	}
+
+	private XYMultipleSeriesRenderer makeGraphViewRenderer() {
         XYMultipleSeriesRenderer renderer = new XYMultipleSeriesRenderer();
-        renderer.setChartTitle(getString(R.string.hours_spent_at_work));
+        
+        Time totalWeekHours = statisticsDao.calculateLastWeekTotalWorkedTime();
+        String title = getString(R.string.week_statistics, timeFormatter.format(totalWeekHours));
+        renderer.setChartTitle(title);
+        
         renderer.setXTitle(getString(R.string.days));
         renderer.setYTitle(getString(R.string.hours));
         renderer.setXLabelsAlign(Paint.Align.RIGHT);
@@ -106,13 +119,13 @@ public class StatisticsActivity extends Activity {
         rendererSeries.setChartValuesTextSize(25);
         rendererSeries.setChartValuesSpacing(4f);
         rendererSeries.setChartValuesTextAlign(Align.CENTER);
-        rendererSeries.setChartValuesFormat(timeFormatter);
+        rendererSeries.setChartValuesFormat(timeFormatAdapter);
         renderer.addSeriesRenderer(rendererSeries);
         
         return renderer;
     }
     
-    private XYMultipleSeriesDataset makeLastWeekStatisticsDataSet() {
+    private XYMultipleSeriesDataset makeStatisticsDataSet() {
     	XYSeries series = new XYSeries("Worked hours at day", 0);
 
         for (DayStatistics value : statisticsDao.loadLastWeekStatistics()) {
@@ -133,5 +146,4 @@ public class StatisticsActivity extends Activity {
             renderer.addXTextLabel(weekDayFormatter.getDayCoordinate(i), weekDayFormatter.getWeekDayTitle(i));
         }
     }
-
 }
