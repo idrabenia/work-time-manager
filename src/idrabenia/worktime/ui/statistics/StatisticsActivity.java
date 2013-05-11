@@ -7,9 +7,6 @@ import idrabenia.worktime.domain.date.Time;
 import idrabenia.worktime.domain.date.TimeFormatter;
 import idrabenia.worktime.domain.statistics.DayStatistics;
 
-import java.text.FieldPosition;
-import java.text.NumberFormat;
-import java.text.ParsePosition;
 import java.util.Calendar;
 
 import org.achartengine.ChartFactory;
@@ -25,6 +22,7 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Paint.Align;
 import android.os.Bundle;
+import android.view.MenuItem;
 import android.widget.LinearLayout;
 
 /**
@@ -33,26 +31,6 @@ import android.widget.LinearLayout;
  */
 public class StatisticsActivity extends Activity {
 	private static final TimeFormatter timeFormatter = new TimeFormatter();
-    private static final NumberFormat timeFormatAdapter = new NumberFormat() {
-		private static final long serialVersionUID = 1L;
-
-		@Override
-		public Number parse(String string, ParsePosition position) {
-			return null;
-		}
-		
-		@Override
-		public StringBuffer format(long value, StringBuffer buffer,
-				FieldPosition field) {
-			return null;
-		}
-		
-		@Override
-		public StringBuffer format(double value, StringBuffer buffer,
-				FieldPosition field) {
-			return new StringBuffer(timeFormatter.format(new Time((long)(value * 3600 * 1000))));
-		}
-	};
 	
 	private final WeekDayFormatter weekDayFormatter = new WeekDayFormatter();
     private WorkStatisticsDao statisticsDao;
@@ -60,16 +38,27 @@ public class StatisticsActivity extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        
         setContentView(R.layout.analytics);
         
-        if (statisticsDao == null) {
-        	statisticsDao = new WorkStatisticsDaoImpl(this);
-        }
+        getActionBar().setDisplayHomeAsUpEnabled(true);
         
+        initializeStatisticsDao();
+        
+    	initializeChart();
+    }
+    
+    private void initializeChart() {
     	GraphicalView chartView = ChartFactory.getBarChartView(this, makeStatisticsDataSet(), makeGraphViewRenderer(), 
     			BarChart.Type.DEFAULT);
     	LinearLayout layout = (LinearLayout) findViewById(R.id.analytics_layout);
         layout.addView(chartView);
+    }
+    
+    private void initializeStatisticsDao() {
+    	if (statisticsDao == null) {
+        	statisticsDao = new WorkStatisticsDaoImpl(this);
+        }
     }
     
     @Override
@@ -79,14 +68,26 @@ public class StatisticsActivity extends Activity {
 		statisticsDao.close();
 		statisticsDao = null;
 	}
+    
+    @Override
+    public boolean onMenuItemSelected(int featureId, MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                finish();
+                return true;
+            default:
+                return super.onMenuItemSelected(featureId, item);
+        }
+    }
 
+    private String getChartTitle() {
+    	Time totalWeekHours = statisticsDao.calculateLastWeekTotalWorkedTime();
+        return getString(R.string.week_statistics, timeFormatter.format(totalWeekHours));
+    }
+    
 	private XYMultipleSeriesRenderer makeGraphViewRenderer() {
         XYMultipleSeriesRenderer renderer = new XYMultipleSeriesRenderer();
-        
-        Time totalWeekHours = statisticsDao.calculateLastWeekTotalWorkedTime();
-        String title = getString(R.string.week_statistics, timeFormatter.format(totalWeekHours));
-        renderer.setChartTitle(title);
-        
+        renderer.setChartTitle(getChartTitle());
         renderer.setXTitle(getString(R.string.days));
         renderer.setYTitle(getString(R.string.hours));
         renderer.setXLabelsAlign(Paint.Align.RIGHT);
@@ -119,7 +120,7 @@ public class StatisticsActivity extends Activity {
         rendererSeries.setChartValuesTextSize(25);
         rendererSeries.setChartValuesSpacing(4f);
         rendererSeries.setChartValuesTextAlign(Align.CENTER);
-        rendererSeries.setChartValuesFormat(timeFormatAdapter);
+        rendererSeries.setChartValuesFormat(new TimeFormatAdapter());
         renderer.addSeriesRenderer(rendererSeries);
         
         return renderer;
@@ -142,8 +143,12 @@ public class StatisticsActivity extends Activity {
 
     private void generateDayLabels(XYMultipleSeriesRenderer renderer) {
     	renderer.setXLabelsAlign(Align.CENTER);
+    	
         for (int i = Calendar.SUNDAY; i <= Calendar.SATURDAY; i += 1) {
-            renderer.addXTextLabel(weekDayFormatter.getDayCoordinate(i), weekDayFormatter.getWeekDayTitle(i));
+        	int coordinate = weekDayFormatter.getDayCoordinate(i);
+        	String label = weekDayFormatter.getWeekDayTitle(i);
+            renderer.addXTextLabel(coordinate, label);
         }
     }
+    
 }
