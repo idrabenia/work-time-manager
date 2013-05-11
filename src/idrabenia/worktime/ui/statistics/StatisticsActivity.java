@@ -1,4 +1,4 @@
-package idrabenia.worktime.ui.analytics;
+package idrabenia.worktime.ui.statistics;
 
 import java.text.*;
 import java.util.Calendar;
@@ -31,6 +31,7 @@ import android.widget.LinearLayout;
  */
 public class StatisticsActivity extends Activity {
 	private final TimeFormatter timeFormatter = new TimeFormatter();
+	private final WeekDayFormatter weekDayFormatter = new WeekDayFormatter();
     private WorkStatisticsDao statisticsDao;
 
     @Override
@@ -110,7 +111,7 @@ public class StatisticsActivity extends Activity {
     	XYSeries series = new XYSeries("Worked hours at day", 0);
 
         for (DayStatistics value : statisticsDao.loadLastWeekStatistics()) {
-        	double x = value.getDayOfWeek();
+        	double x = weekDayFormatter.getWeekDayIndex(value.getDayOfWeek());
         	double y = value.getWorkedHours();
             series.add(x, y);
         }
@@ -122,12 +123,9 @@ public class StatisticsActivity extends Activity {
     }
 
     private void generateDayLabels(XYMultipleSeriesRenderer renderer) {
-        DateFormatSymbols dateFormatSymbols = new DateFormatSymbols();
-        final int firstWeekDay = Calendar.getInstance().getFirstDayOfWeek();
-        final int DAYS_PER_WEEK = 7;
-        for (int i = firstWeekDay - 1; i <= firstWeekDay - 1 + DAYS_PER_WEEK; i += 1) {
-            renderer.addXTextLabel(i % DAYS_PER_WEEK + 1, dateFormatSymbols.getShortWeekdays()[i % DAYS_PER_WEEK + 1]);
-            renderer.setXLabelsAlign(Align.CENTER);
+    	renderer.setXLabelsAlign(Align.CENTER);
+        for (int i = Calendar.SUNDAY; i <= Calendar.SATURDAY; i += 1) {
+            renderer.addXTextLabel(weekDayFormatter.getWeekDayIndex(i), weekDayFormatter.getWeekDayTitle(i));
         }
     }
 

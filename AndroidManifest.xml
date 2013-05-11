@@ -24,7 +24,7 @@
 
         <activity android:name=".ui.settings.SettingsActivity" />
 
-        <activity android:name=".ui.analytics.StatisticsActivity" android:screenOrientation="landscape"/>
+        <activity android:name="idrabenia.worktime.ui.statistics.StatisticsActivity" android:screenOrientation="landscape"/>
 
         <receiver android:name=".ui.calculation.UpdateTimerReceiver" />
 
