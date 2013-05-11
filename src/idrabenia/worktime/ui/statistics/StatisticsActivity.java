@@ -133,4 +133,5 @@ public class StatisticsActivity extends Activity {
             renderer.addXTextLabel(weekDayFormatter.getDayCoordinate(i), weekDayFormatter.getWeekDayTitle(i));
         }
     }
+
 }
