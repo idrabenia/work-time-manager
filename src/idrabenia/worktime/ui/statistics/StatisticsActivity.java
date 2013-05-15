@@ -102,7 +102,7 @@ public class StatisticsActivity extends Activity {
         renderer.setPanLimits(new double[] { -3, 20, -3, 24 });
         renderer.setZoomLimits(new double[] { -10, 20, -10, 24 });
         renderer.setShowGrid(true);
-        renderer.setBarSpacing(0);
+        renderer.setBarSpacing(0.5);
         renderer.setLabelsColor(Color.WHITE);
         renderer.setAxisTitleTextSize(25);
         renderer.setChartTitleTextSize(35);

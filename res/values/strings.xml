@@ -22,4 +22,6 @@
     <string name="days">Days</string>
     <string name="hours">Hours</string>
     <string name="week_statistics">Week Statistics (Total Spent %1$s)</string>
+    <string name="wifi_not_enabled">WiFi not enabled</string>
+    <string name="need_to_enable_wifi">For correct working of application you need to enabled WiFi</string>
 </resources>

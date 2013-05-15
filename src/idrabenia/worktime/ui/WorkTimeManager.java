@@ -4,6 +4,7 @@ import idrabenia.worktime.R;
 import idrabenia.worktime.domain.calculation.TimerService;
 import idrabenia.worktime.domain.date.Time;
 import idrabenia.worktime.domain.date.TimeFormatter;
+import idrabenia.worktime.domain.wifi.WifiNetworkAdapter;
 import idrabenia.worktime.ui.calculation.BackgroundService;
 import idrabenia.worktime.ui.settings.SettingsActivity;
 import idrabenia.worktime.ui.statistics.StatisticsActivity;
@@ -26,6 +27,7 @@ public class WorkTimeManager extends Activity {
 
     private TimeFormatter timeFormatter = new TimeFormatter();
     private TimerService timerService;
+    private WifiNetworkAdapter wifiAdapter;
     private Timer refreshTimer;
     private AlertDialog resetDialog;
 
@@ -36,6 +38,25 @@ public class WorkTimeManager extends Activity {
 
         BackgroundService.start(this);
         timerService = TimerService.getInstance(this);
+        wifiAdapter = new WifiNetworkAdapter(this);
+        
+        validateWifiState();
+    }
+    
+    private void validateWifiState() {
+    	if (!wifiAdapter.isWifiEnabled()) {
+    		new AlertDialog.Builder(this)
+    			.setTitle(R.string.wifi_not_enabled)
+    			.setMessage(R.string.need_to_enable_wifi)
+    			.setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+					
+					@Override
+					public void onClick(DialogInterface dialog, int which) {
+						finish();
+					}
+				})
+    			.show();
+    	}
     }
 
     @Override

@@ -19,8 +19,12 @@ public class WifiNetworkAdapter {
         this.context = curContext;
     }
 
+    private WifiManager getWifiManager() {
+    	return (WifiManager) context.getSystemService(Service.WIFI_SERVICE);
+    }
+    
     private List<String> getAvailableNetworks() {
-        List<ScanResult> networks = ((WifiManager) context.getSystemService(Service.WIFI_SERVICE)).getScanResults();
+        List<ScanResult> networks = getWifiManager().getScanResults();
         List<String> networkNames = new ArrayList<String>(networks.size());
 
         for (ScanResult curNetwork : networks) {
@@ -40,5 +44,9 @@ public class WifiNetworkAdapter {
         }
 
         return false;
+    }
+    
+    public boolean isWifiEnabled() {
+    	return getWifiManager().isWifiEnabled();
     }
 }
