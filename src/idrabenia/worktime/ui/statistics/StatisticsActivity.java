@@ -22,6 +22,8 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Paint.Align;
 import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.widget.LinearLayout;
 
@@ -34,6 +36,8 @@ public class StatisticsActivity extends Activity {
 	
 	private final WeekDayFormatter weekDayFormatter = new WeekDayFormatter();
     private WorkStatisticsDao statisticsDao;
+    
+    private int currentWeekNumber = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,10 +52,17 @@ public class StatisticsActivity extends Activity {
     	initializeChart();
     }
     
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        new MenuInflater(this).inflate(R.menu.statistics_menu, menu);
+        return super.onCreateOptionsMenu(menu);
+    }
+    
     private void initializeChart() {
     	GraphicalView chartView = ChartFactory.getBarChartView(this, makeStatisticsDataSet(), makeGraphViewRenderer(), 
     			BarChart.Type.DEFAULT);
     	LinearLayout layout = (LinearLayout) findViewById(R.id.analytics_layout);
+    	layout.removeAllViews();
         layout.addView(chartView);
     }
     
@@ -129,7 +140,7 @@ public class StatisticsActivity extends Activity {
     private XYMultipleSeriesDataset makeStatisticsDataSet() {
     	XYSeries series = new XYSeries("Worked hours at day", 0);
 
-        for (DayStatistics value : statisticsDao.loadLastWeekStatistics()) {
+        for (DayStatistics value : statisticsDao.loadWeekStatisticsFor(currentWeekNumber)) {
         	double x = weekDayFormatter.getDayCoordinate(value.getDayOfWeek());
         	double y = value.getWorkedHours();
             series.add(x, y);
@@ -149,6 +160,21 @@ public class StatisticsActivity extends Activity {
         	String label = weekDayFormatter.getWeekDayTitle(i);
             renderer.addXTextLabel(coordinate, label);
         }
+    }
+    
+    public boolean showPreviousWeekStatistics(MenuItem item) {
+    	currentWeekNumber -= 1;
+    	initializeChart();
+    	return true;
+    }
+    
+    public boolean showNextWeekStatistics(MenuItem item) {
+    	if (currentWeekNumber + 1 <=0) {
+    		currentWeekNumber += 1;
+    	}
+    	
+    	initializeChart();
+    	return true;
     }
     
 }

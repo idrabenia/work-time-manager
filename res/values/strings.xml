@@ -24,4 +24,6 @@
     <string name="week_statistics">Week Statistics (Total Spent %1$s)</string>
     <string name="wifi_not_enabled">WiFi not enabled</string>
     <string name="need_to_enable_wifi">For correct working of application you need to enabled WiFi</string>
+    <string name="menu_previous_week">Previuous Week Statistics</string>
+    <string name="menu_next_week">Next Week Statistics</string>
 </resources>

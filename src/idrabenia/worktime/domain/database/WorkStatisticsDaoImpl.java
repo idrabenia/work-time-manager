@@ -14,10 +14,9 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
 public class WorkStatisticsDaoImpl implements WorkStatisticsDao {
-	private static final String QUERY_LAST_WEEK_STATISTICS 
-			= "select day, work_time from work_time where day >= ? order by day asc";
-	private static final String QUERY_LAST_WEEK_TOTAL_HOURS 
-			= "select sum(work_time) from work_time where day >= ?"; 
+	private static final String QUERY_WEEK_STATISTICS 
+			= "select day, work_time from work_time where day >= ? and day <= ? order by day asc";
+	private static final String QUERY_LAST_WEEK_TOTAL_HOURS = "select sum(work_time) from work_time where day >= ?"; 
 
     private final WorkTimeDbHelper dbHelper;
 
@@ -26,9 +25,11 @@ public class WorkStatisticsDaoImpl implements WorkStatisticsDao {
     }
 
     @Override
-    public List<DayStatistics> loadLastWeekStatistics() {
+    public List<DayStatistics> loadWeekStatisticsFor(int relativeWeekNumber) {
     	SQLiteDatabase db = dbHelper.getReadableDatabase();
-        Cursor result = db.rawQuery(QUERY_LAST_WEEK_STATISTICS, asArray(getFirstDayOfCurrentWeek()));
+        Cursor result = db.rawQuery(QUERY_WEEK_STATISTICS, asArray(
+        		getFirstDayOfWeek(relativeWeekNumber), 
+        		getLastDayOfWeek(relativeWeekNumber)));
 
         try {
             List<DayStatistics> statistics = new ArrayList<DayStatistics>(result.getCount());
@@ -87,6 +88,41 @@ public class WorkStatisticsDaoImpl implements WorkStatisticsDao {
         
         return firstDayOfWeek.getTimeInMillis();
     }
+	
+	private int getCurrentWeekNumber() {
+		GregorianCalendar curDate = new GregorianCalendar();
+        curDate.setTime(new Date());
+        return curDate.get(Calendar.WEEK_OF_YEAR);
+	}
+	
+	private int getCurrentYear() {
+		GregorianCalendar curDate = new GregorianCalendar();
+        curDate.setTime(new Date());
+        return curDate.get(Calendar.YEAR);
+	}
+
+	private Calendar getFirstDayOfWeekCalendar(int relativeWeekNumber) {    	
+        GregorianCalendar firstDayOfWeek = new GregorianCalendar();
+        firstDayOfWeek.clear();
+
+        firstDayOfWeek.set(Calendar.WEEK_OF_YEAR, getCurrentWeekNumber() + relativeWeekNumber);
+        firstDayOfWeek.set(Calendar.DAY_OF_WEEK, firstDayOfWeek.getFirstDayOfWeek());
+        firstDayOfWeek.set(Calendar.YEAR, getCurrentYear());
+        
+        return firstDayOfWeek;
+	}
+
+	private Long getFirstDayOfWeek(int relativeWeekNumber) {    	        
+        return getFirstDayOfWeekCalendar(relativeWeekNumber).getTimeInMillis();
+	}
+	
+	private Long getLastDayOfWeek(int relativeWeekNumber) {
+		Calendar lastDayOfWeek = getFirstDayOfWeekCalendar(relativeWeekNumber);
+		
+        lastDayOfWeek.add(Calendar.DAY_OF_MONTH, 6);
+        
+        return lastDayOfWeek.getTimeInMillis();
+	}
 
     public void close() {
         dbHelper.close();

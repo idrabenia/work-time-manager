@@ -7,7 +7,7 @@ import java.util.List;
 
 public interface WorkStatisticsDao {
 
-	List<DayStatistics> loadLastWeekStatistics();
+	List<DayStatistics> loadWeekStatisticsFor(int relativeWeekNumber);
 	
 	Time calculateLastWeekTotalWorkedTime();
 	
