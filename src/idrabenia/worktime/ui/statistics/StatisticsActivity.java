@@ -37,7 +37,7 @@ public class StatisticsActivity extends Activity {
 	private final WeekDayFormatter weekDayFormatter = new WeekDayFormatter();
     private WorkStatisticsDao statisticsDao;
     
-    private int currentWeekNumber = 0;
+    private int weekNumber = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -92,7 +92,7 @@ public class StatisticsActivity extends Activity {
     }
 
     private String getChartTitle() {
-    	Time totalWeekHours = statisticsDao.calculateLastWeekTotalWorkedTime();
+    	Time totalWeekHours = statisticsDao.calculateTotalWorkedTimeFor(weekNumber);
         return getString(R.string.week_statistics, timeFormatter.format(totalWeekHours));
     }
     
@@ -140,7 +140,7 @@ public class StatisticsActivity extends Activity {
     private XYMultipleSeriesDataset makeStatisticsDataSet() {
     	XYSeries series = new XYSeries("Worked hours at day", 0);
 
-        for (DayStatistics value : statisticsDao.loadWeekStatisticsFor(currentWeekNumber)) {
+        for (DayStatistics value : statisticsDao.loadWeekStatisticsFor(weekNumber)) {
         	double x = weekDayFormatter.getDayCoordinate(value.getDayOfWeek());
         	double y = value.getWorkedHours();
             series.add(x, y);
@@ -163,14 +163,17 @@ public class StatisticsActivity extends Activity {
     }
     
     public boolean showPreviousWeekStatistics(MenuItem item) {
-    	currentWeekNumber -= 1;
+    	if (statisticsDao.isStatisticsAvailableFor(weekNumber - 1)) {
+    		weekNumber -= 1;
+    	}
+    	
     	initializeChart();
     	return true;
     }
     
     public boolean showNextWeekStatistics(MenuItem item) {
-    	if (currentWeekNumber + 1 <=0) {
-    		currentWeekNumber += 1;
+    	if (statisticsDao.isStatisticsAvailableFor(weekNumber + 1)) {
+    		weekNumber += 1;
     	}
     	
     	initializeChart();

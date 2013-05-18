@@ -16,7 +16,9 @@ import android.database.sqlite.SQLiteDatabase;
 public class WorkStatisticsDaoImpl implements WorkStatisticsDao {
 	private static final String QUERY_WEEK_STATISTICS 
 			= "select day, work_time from work_time where day >= ? and day <= ? order by day asc";
-	private static final String QUERY_LAST_WEEK_TOTAL_HOURS = "select sum(work_time) from work_time where day >= ?"; 
+	private static final String QUERY_LAST_WEEK_TOTAL_HOURS 
+			= "select sum(work_time) from work_time where day >= ? and day <= ?";
+	private static final String QUERY_OLDEST_RECORD_DAY = "select min(day) from work_time";
 
     private final WorkTimeDbHelper dbHelper;
 
@@ -46,9 +48,10 @@ public class WorkStatisticsDaoImpl implements WorkStatisticsDao {
     }
     
     @Override
-	public Time calculateLastWeekTotalWorkedTime() {
+	public Time calculateTotalWorkedTimeFor(int relativeWeekNumber) {
     	SQLiteDatabase db = dbHelper.getReadableDatabase();
-    	Cursor cursor = db.rawQuery(QUERY_LAST_WEEK_TOTAL_HOURS, asArray(getFirstDayOfCurrentWeek()));
+    	Cursor cursor = db.rawQuery(QUERY_LAST_WEEK_TOTAL_HOURS, asArray(getFirstDayOfWeek(relativeWeekNumber), 
+    			getLastDayOfWeek(relativeWeekNumber)));
     	
     	try {
     		long totalTime = 0L;
@@ -64,7 +67,28 @@ public class WorkStatisticsDaoImpl implements WorkStatisticsDao {
     	}
 	}
     
-    private String[] asArray(Object... args) {
+    @Override
+	public boolean isStatisticsAvailableFor(int relativeWeekNumber) {
+    	if (relativeWeekNumber > 0) {
+    		return false;
+    	}
+    	
+    	SQLiteDatabase db = dbHelper.getReadableDatabase();
+    	Cursor result = db.rawQuery(QUERY_OLDEST_RECORD_DAY, null);
+    	try {
+    		if (result.getCount() == 1) {
+    			result.moveToFirst();
+    			long oldestRecordDay = result.getLong(0);
+    			return oldestRecordDay <= getLastDayOfWeek(relativeWeekNumber);
+    		} else {
+    			return false;
+    		}
+    	} finally {
+    		result.close();
+    	}
+	}
+
+	private String[] asArray(Object... args) {
     	String[] stringValues = new String[args.length];
     	
     	for (int i = 0; i < args.length; i++) {
@@ -72,21 +96,6 @@ public class WorkStatisticsDaoImpl implements WorkStatisticsDao {
     	}
     	
     	return stringValues;
-    }
-
-	private Long getFirstDayOfCurrentWeek() {
-        GregorianCalendar curDate = new GregorianCalendar();
-        curDate.setTime(new Date());
-        int curWeekNumber = curDate.get(Calendar.WEEK_OF_YEAR);
-    	
-        GregorianCalendar firstDayOfWeek = new GregorianCalendar();
-        firstDayOfWeek.clear();
-
-        firstDayOfWeek.set(Calendar.WEEK_OF_YEAR, curWeekNumber);
-        firstDayOfWeek.set(Calendar.DAY_OF_WEEK, firstDayOfWeek.getFirstDayOfWeek());
-        firstDayOfWeek.set(Calendar.YEAR, curDate.get(Calendar.YEAR));
-        
-        return firstDayOfWeek.getTimeInMillis();
     }
 	
 	private int getCurrentWeekNumber() {

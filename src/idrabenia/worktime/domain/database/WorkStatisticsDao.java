@@ -9,7 +9,9 @@ public interface WorkStatisticsDao {
 
 	List<DayStatistics> loadWeekStatisticsFor(int relativeWeekNumber);
 	
-	Time calculateLastWeekTotalWorkedTime();
+	Time calculateTotalWorkedTimeFor(int relativeWeekNumber);
+	
+	boolean isStatisticsAvailableFor(int relativeWeekNumber);
 	
 	void close();
 	
