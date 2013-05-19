@@ -5,8 +5,10 @@ import idrabenia.worktime.domain.database.WorkStatisticsDao;
 import idrabenia.worktime.domain.database.WorkStatisticsDaoImpl;
 import idrabenia.worktime.domain.date.Time;
 import idrabenia.worktime.domain.date.TimeFormatter;
+import idrabenia.worktime.domain.date.Week;
 import idrabenia.worktime.domain.statistics.DayStatistics;
 
+import java.text.DateFormat;
 import java.util.Calendar;
 
 import org.achartengine.ChartFactory;
@@ -92,8 +94,12 @@ public class StatisticsActivity extends Activity {
     }
 
     private String getChartTitle() {
+    	Week week = new Week(weekNumber);
+    	DateFormat dateFormat = android.text.format.DateFormat.getDateFormat(this);
+    	
     	Time totalWeekHours = statisticsDao.calculateTotalWorkedTimeFor(weekNumber);
-        return getString(R.string.week_statistics, timeFormatter.format(totalWeekHours));
+        return getString(R.string.week_statistics, dateFormat.format(week.getFirstDayOfWeek()), 
+        		dateFormat.format(week.getLastDayOfWeek()), timeFormatter.format(totalWeekHours));
     }
     
 	private XYMultipleSeriesRenderer makeGraphViewRenderer() {
@@ -106,14 +112,15 @@ public class StatisticsActivity extends Activity {
         renderer.setXAxisMin(-0.5);
         renderer.setXAxisMax(6.5);
         renderer.setYAxisMin(0);
-        renderer.setYAxisMax(10);
+        renderer.setYAxisMax(12);
         renderer.setClickEnabled(false);
         renderer.setExternalZoomEnabled(false);
         renderer.setZoomButtonsVisible(false);
         renderer.setPanLimits(new double[] { -3, 20, -3, 24 });
         renderer.setZoomLimits(new double[] { -10, 20, -10, 24 });
         renderer.setShowGrid(true);
-        renderer.setBarSpacing(0.5);
+        renderer.setBarSpacing(0);
+        renderer.setBarWidth(80.0f);
         renderer.setLabelsColor(Color.WHITE);
         renderer.setAxisTitleTextSize(25);
         renderer.setChartTitleTextSize(35);
