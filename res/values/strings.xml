@@ -20,7 +20,7 @@
     <string name="statistics">Statistics</string>
     <string name="days">Days</string>
     <string name="hours">Hours</string>
-    <string name="week_statistics">Statistics From %1$s To %2$s (Total Spent %3$s)</string>
+    <string name="week_statistics">Week Statistics (%1$s - %2$s, %3$s)</string>
     <string name="wifi_not_enabled">WiFi not enabled</string>
     <string name="need_to_enable_wifi">For correct working of application you need to enabled WiFi</string>
     <string name="menu_previous_week">Previuous Week Statistics</string>
