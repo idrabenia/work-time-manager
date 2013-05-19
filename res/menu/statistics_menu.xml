@@ -2,13 +2,13 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
     <item android:id="@+id/menu_previous_week"
           android:title="@string/menu_previous_week"
-          android:showAsAction="always"
-          android:icon="@drawable/ic_back_button"
+          android:showAsAction="ifRoom"
+          android:icon="@drawable/ic_previous"
           android:onClick="showPreviousWeekStatistics" />
 
     <item android:id="@+id/menu_next_week"
           android:title="@string/menu_next_week"
-          android:icon="@drawable/ic_next_button"
-          android:showAsAction="always"
+          android:icon="@drawable/ic_next"
+          android:showAsAction="ifRoom"
           android:onClick="showNextWeekStatistics" />
 </menu>
