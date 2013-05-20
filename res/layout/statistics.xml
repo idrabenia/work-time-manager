@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:orientation="vertical"
+    android:background="#000000" >
+
+	<LinearLayout
+	    android:id="@+id/chart_container"
+	    android:layout_width="fill_parent"
+	    android:layout_height="wrap_content"
+	    android:layout_gravity="top"
+	    android:layout_weight="12" >
+	    
+		<!-- Container for chart -->
+		
+	</LinearLayout>
+	
+	<TextView
+	    android:id="@+id/total_worked_time_label"
+	    android:layout_width="fill_parent"
+	    android:layout_height="wrap_content"
+	    android:layout_gravity="bottom"
+	    android:layout_weight="1"
+	    android:background="#000000"
+	    android:lines="2"
+	    android:paddingLeft="16dp"
+	    android:text="Total Spent"
+	    android:textAppearance="?android:attr/textAppearanceMedium" />
+
+</LinearLayout>

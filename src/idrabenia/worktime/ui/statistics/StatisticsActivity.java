@@ -3,7 +3,6 @@ package idrabenia.worktime.ui.statistics;
 import idrabenia.worktime.R;
 import idrabenia.worktime.domain.database.WorkStatisticsDao;
 import idrabenia.worktime.domain.database.WorkStatisticsDaoImpl;
-import idrabenia.worktime.domain.date.Time;
 import idrabenia.worktime.domain.date.TimeFormatter;
 import idrabenia.worktime.domain.date.Week;
 import idrabenia.worktime.domain.statistics.DayStatistics;
@@ -28,6 +27,7 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 
 /**
  * @author Ilya Drabenia
@@ -45,7 +45,7 @@ public class StatisticsActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         
-        setContentView(R.layout.analytics);
+        setContentView(R.layout.statistics);
         
         getActionBar().setDisplayHomeAsUpEnabled(true);
         
@@ -61,11 +61,17 @@ public class StatisticsActivity extends Activity {
     }
     
     private void initializeChart() {
+    	// build chart with statistics
     	GraphicalView chartView = ChartFactory.getBarChartView(this, makeStatisticsDataSet(), makeGraphViewRenderer(), 
     			BarChart.Type.DEFAULT);
-    	LinearLayout layout = (LinearLayout) findViewById(R.id.analytics_layout);
+    	LinearLayout layout = (LinearLayout) findViewById(R.id.chart_container);
     	layout.removeAllViews();
         layout.addView(chartView);
+        
+        // set total worked time
+        TextView totalLabel = (TextView) findViewById(R.id.total_worked_time_label);
+    	String totalWorkedTime = timeFormatter.format(statisticsDao.calculateTotalWorkedTimeFor(weekNumber));
+    	totalLabel.setText(getString(R.string.total_spent, totalWorkedTime));
     }
     
     private void initializeStatisticsDao() {
@@ -95,11 +101,12 @@ public class StatisticsActivity extends Activity {
 
     private String getChartTitle() {
     	Week week = new Week(weekNumber);
-    	DateFormat dateFormat = android.text.format.DateFormat.getDateFormat(this);
     	
-    	Time totalWeekHours = statisticsDao.calculateTotalWorkedTimeFor(weekNumber);
-        return getString(R.string.week_statistics, dateFormat.format(week.getFirstDayOfWeek()), 
-        		dateFormat.format(week.getLastDayOfWeek()), timeFormatter.format(totalWeekHours));
+    	DateFormat dateFormat = android.text.format.DateFormat.getDateFormat(this);
+    	String firstDay = dateFormat.format(week.getFirstDayOfWeek());
+    	String lastDay = dateFormat.format(week.getLastDayOfWeek()); 
+    	
+        return getString(R.string.week_statistics, firstDay, lastDay);
     }
     
 	private XYMultipleSeriesRenderer makeGraphViewRenderer() {
